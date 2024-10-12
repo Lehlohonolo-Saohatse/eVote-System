@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Candidate</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Optional: Link to a CSS file for styling -->
+    <script>
+        async function addCandidate(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Get form data
+            const candidate = {
+                name: document.getElementById('name').value,
+                party: document.getElementById('party').value,
+                election: document.getElementById('election').value,
+            };
+
+            // Make a POST request to the server to add the candidate
+            try {
+                const response = await fetch('/api/candidates', { // Adjust the URL if necessary
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(candidate),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Candidate added:', result);
+                    alert('Candidate added successfully!');
+                    // Optionally, clear the form
+                    document.getElementById('candidate-form').reset();
+                } else {
+                    console.error('Error adding candidate:', response.statusText);
+                    alert('Error adding candidate. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Add Candidate</h1>
+    <form id="candidate-form" onsubmit="addCandidate(event)">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="party">Party:</label>
+        <input type="text" id="party" name="party" required>
+
+        <label for="election">Election:</label>
+        <input type="text" id="election" name="election" required>
+
+        <button type="submit">Add Candidate</button>
+    </form>
+</div>
+</body>
+</html>
